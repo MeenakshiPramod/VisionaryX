@@ -44,22 +44,31 @@ export default function InputSection({ onGenerate, loading, setLoading }: InputS
     setLoading(true);
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 2500));
+      // Call the API endpoint
+      const response = await fetch('/api/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          productIdea: productIdea.trim(),
+          referenceImage: uploadedImage,
+        }),
+      });
 
-      const words = productIdea.trim().split(' ').slice(0, 4).join(' ');
-      const mockData: VisualizationData = {
-        productTitle: `Innovative ${words.charAt(0).toUpperCase() + words.slice(1)}`,
-        description: `Introducing a revolutionary ${productIdea.toLowerCase()} that combines cutting-edge technology with elegant design. This product is engineered to exceed expectations, offering unmatched quality, sustainability, and user experience. Perfect for those who demand excellence in every detail.`,
-        targetAudience: 'Modern consumers, tech enthusiasts, early adopters aged 18-45, urban professionals seeking innovation and quality',
-        tagline: 'Innovation Meets Excellence',
-        colorPalette: ['#06b6d4', '#3b82f6', '#8b5cf6', '#ec4899', '#f59e0b'],
-        visualDescription: `A sleek, premium ${productIdea.toLowerCase()} featuring modern aesthetics, intuitive design, and sustainable materials`,
-        generatedAt: new Date().toISOString(),
-      };
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('API Error Response:', errorData);
+        console.error('Status:', response.status);
+        throw new Error(errorData.error || errorData.details || 'Failed to generate visualization');
+      }
 
-      onGenerate(mockData);
+      const data = await response.json();
+      console.log('Generated data:', data);
+      onGenerate(data);
     } catch (error) {
-      alert('Failed to generate visualization');
+      console.error('Full error details:', error);
+      alert(error instanceof Error ? error.message : 'Failed to generate visualization. Check console for details.');
     } finally {
       setLoading(false);
     }
