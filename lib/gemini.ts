@@ -121,7 +121,7 @@ import { VisualizationData } from '@/types';
 
 // TEMPORARY: Replace with your actual API key for testing
 // Get your key from: https://aistudio.google.com/app/apikey
-//export const GEMINI_API_KEY = 'AIzaSyCQdAnO1m4vgliVumrdmKBy6v-jMvLDzn4';
+
 export const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
 
